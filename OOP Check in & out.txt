@@ -1,0 +1,172 @@
+package checkinandout;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Random;
+import java.util.Scanner;
+
+	  public class Henann_Group_of_Resorts {
+		  public static void main(String[] args) {
+		        Map<String, Booking> bookings = new HashMap<>();
+		        Scanner scanner = new Scanner(System.in);
+
+		        while (true) {
+		        	 System.out.println("WELCOME TO HENNAN GROUP OF RESORT");
+		        	 System.out.println("----------------------------------------------");
+		            System.out.println("[1]. Check In");
+		            System.out.println("[2]. Check Out");
+		            System.out.println("[3]. Exit");
+		            System.out.println("----------------------------------------------");
+		            System.out.print("Select option: ");
+		            int choice = scanner.nextInt();
+
+		            switch (choice) {
+		                case 1:
+		                    performCheckIn(bookings, scanner);
+		                    break;
+		                case 2:
+		                    performCheckOut(bookings, scanner);
+		                    break;
+		                case 3:
+		                    System.out.println("Exiting program. Goodbye!");
+		                    System.exit(0);
+		                default:
+		                    System.out.println("Invalid option. Please try again.");
+		            }
+		        }
+		    }
+
+		    private static void performCheckIn(Map<String, Booking> bookings, Scanner scanner) {
+		    	 System.out.println("----------------------------------------------");
+		    	System.out.println("Enter details for Check In:");
+		        // Generate a unique booking reference number
+		        String bookingReferenceNumber = generateUniqueBookingReference();
+
+		        System.out.print("Number of guests: ");
+		        int numOfGuests = scanner.nextInt();
+
+		        System.out.println("----------------------------------------------");
+		        System.out.println("Select room type: ");
+	            System.out.println("[·]REGULAR");
+	            System.out.println("[·]PREMIUM");
+	            System.out.println("----------------------------------------------");
+	            System.out.print("Room Type: ");
+		        String roomType = scanner.next();
+
+		        Booking booking = new Booking(numOfGuests, roomType, 0.0);
+		        System.out.println("----------------------------------------------");
+		        System.out.println("Enter guest names:");
+		        for (int i = 1; i <= numOfGuests; i++) {
+		            System.out.print("Guest " + i + ": ");
+		            String guestName = scanner.next();
+		            booking.addGuest(guestName);
+		        }
+
+		        // Room assignment logic (simple example)
+		        System.out.println("----------------------------------------------");
+		        System.out.print("Enter preferred room number: ");
+		        String roomNumber = scanner.next();
+		        System.out.println("----------------------------------------------");
+		        booking.assignRoomNumber(roomNumber);
+		        System.out.println("----------------------------------------------");
+		        System.out.println("Check-in completed. Room number assigned: " + booking.getRoomNumber());
+		        System.out.println("----------------------------------------------");		        // Add booking to the map after satisfying the conditions
+		        bookings.put(bookingReferenceNumber, booking);
+		        System.out.println("----------------------------------------------");
+		        System.out.println("Booking Reference Number: " + bookingReferenceNumber);
+		        System.out.println("----------------------------------------------");
+		    }
+
+		    private static String generateUniqueBookingReference() {
+		        // Generate a random number between 100 and 999 and append it to "Henann"
+		        Random random = new Random();
+		        int randomNum = random.nextInt(900) + 100;
+		        return "Henann" + randomNum;
+		    }
+
+		    private static void performCheckOut(Map<String, Booking> bookings, Scanner scanner) {
+		        System.out.println("Enter details for Check Out:");
+
+		        System.out.print("Booking Reference Number: ");
+		        String bookingReferenceNumber = scanner.next();
+
+		        // Case-insensitive comparison
+		        Booking booking = bookings.get(bookingReferenceNumber);
+
+		        if (booking != null) {
+		            System.out.println("Booking found!");
+		            System.out.println("Room Number: " + booking.getRoomNumber());
+
+		            System.out.print("Enter guest name in the room: ");
+		            String guestNameInRoom = scanner.next();
+
+		            if (isGuestInRoom(booking, guestNameInRoom)) {
+		                // Implement your check-out logic here
+		                // For simplicity, let's remove the booking from the map
+		                bookings.remove(bookingReferenceNumber);
+		                System.out.println("Check Out completed for " + guestNameInRoom + ".");
+		            } else {
+		                System.out.println("Invalid guest name. Check Out cannot be completed.");
+		            }
+		        } else {
+		            System.out.println("Booking not found. Please check the reference number.");
+		        }
+		    }
+
+		    private static boolean isGuestInRoom(Booking booking, String guestName) {
+		        for (String guest : booking.getGuests()) {
+		            if (guestName.equalsIgnoreCase(guest)) {
+		                return true;
+		            }
+		        }
+		        return false;
+		    }
+		}
+
+		class Booking {
+		    private int numOfGuests;
+		    private String roomType;
+		    private double totalAmount;
+		    private String[] guests;
+		    private String roomNumber;
+
+		    public Booking(int numOfGuests, String roomType, double totalAmount) {
+		        this.numOfGuests = numOfGuests;
+		        this.roomType = roomType;
+		        this.totalAmount = totalAmount;
+		        this.guests = new String[numOfGuests];
+		    }
+
+		    public int getNumOfGuests() {
+		        return numOfGuests;
+		    }
+
+		    public String getRoomType() {
+		        return roomType;
+		    }
+
+		    public double getTotalAmount() {
+		        return totalAmount;
+		    }
+
+		    public void addGuest(String guestName) {
+		        for (int i = 0; i < guests.length; i++) {
+		            if (guests[i] == null) {
+		                guests[i] = guestName;
+		                break;
+		            }
+		        }
+		    }
+
+		    public void assignRoomNumber(String roomNumber) {
+		        this.roomNumber = roomNumber;
+		    }
+
+		    public String getRoomNumber() {
+		        return roomNumber;
+		    }
+
+		    public String[] getGuests() {
+		        return guests;
+		    }
+		}
